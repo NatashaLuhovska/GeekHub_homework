@@ -13,7 +13,7 @@ def reaplace_value_in_tuple(first_tuple, value):
 	new_list[-1] = value
 	return tuple(new_list)
 
-list_of_tupels = [(3,'SA',45),(34,'dfg','ert'),('3'),('a','s','d','f','g')]
+list_of_tupels = [(3,'SA',45),(34,'dfg','ert'),(3,),('a','s','d','f','g')]
 
 print(f'List of tupels : {list_of_tupels}')
 

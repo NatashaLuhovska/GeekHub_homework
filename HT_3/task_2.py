@@ -7,6 +7,6 @@ test_list = [(), ('hey'), ('',), ('ma', 'ke', 'my'), [''], {}, ['d', 'a', 'y'], 
 print(f'List : {test_list}')
 new_list = []
 for i in test_list:
-	if bool(i) == True:
+	if i:
 		new_list.append(i)
-print('New list : {new_list}')
+print(f'New list : {new_list}')
