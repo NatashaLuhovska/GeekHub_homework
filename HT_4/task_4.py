@@ -38,7 +38,7 @@ def text_processing(string):
 		new_str = sum_alpha_num(string)
 		print(f'Cума цифр: {new_str[0]}')
 		print(f'Рядок тільки з букв: \n{new_str[1]}')
-	elif len(string) < 50:
+	elif len(string) <= 50:
 		count_str = count_alpha_num(string)
 		print(f'Довжина рядка - {len(string)}, букв у рядку - {count_str[1]}, цифр у рядку - {count_str[0]}')
 	else:
