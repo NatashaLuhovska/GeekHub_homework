@@ -71,7 +71,9 @@ def chek_balance(name):
 
 
 def withdraw_cash(name):
-	cash = int(input('Яку суму ви бажаєте зняти \n'))
+	cash = int(input('Яку суму ви бажаєте зняти (тільки додатні числа)\n'))
+	if cash < 0:
+		return "Ви не можете знімати від'ємні суми!"
 	balance = int(chek_balance(name))
 	if cash > balance:
 		print("Сума перевищує ваш поточний баланс на карті.")
@@ -87,7 +89,9 @@ def withdraw_cash(name):
 
 
 def top_up_account(name):
-	cash = int(input('Яку суму ви бажаєте покласти на рахунок? \n'))
+	cash = int(input('Яку суму ви бажаєте покласти на рахунок? (тільки додатні числа) \n'))
+	if cash < 0:
+		return "Ви не можете знімати від'ємні суми!"
 	balance = int(chek_balance(name))
 	name_balance_file = name + "_balance.txt"
 	with open(name_balance_file, 'wt') as file_balance:

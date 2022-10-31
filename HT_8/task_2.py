@@ -7,26 +7,37 @@
 Не забудьте додати перевірку чи файл існує.'''
 
 def text_slice(name, lenght):
-	with open(name, 'rt') as file:
-		text = file.read()
+	try:
+		with open(name, 'rt') as file:
+			text = file.read()
 
-	if len(text) < lenght:
-		print(f"Діапазон блоку перевищує кількість символів у файлі. Всього: {len(text)}.")
-		print(f"Змініть діапазон та повторіть спробу.")
-		return None
-	bloks = []
-	if len(text) % 2 == lenght % 2 :
+		if len(text) < lenght :
+			print(f"Діапазон блоку перевищує кількість символів у файлі. Всього: {len(text)}.")
+			print(f"Змініть діапазон та повторіть спробу.")
+			return None
+		elif lenght <= 0:
+			print("Кількість символів не може бути від'ємною!")
+			return None
+		bloks = []
+		
 		bloks.append(text[0:lenght])
 		bloks.append(text[int(len(text)/2-lenght/2):int(len(text)/2+lenght/2)])
 		bloks.append(text[len(text)-lenght:])
+
+		if (len(text) % 2 == 0 and lenght % 2 == 1) or (len(text) % 2 == 1 and lenght % 2 == 0):
+			print('')
+			print("Не правильно вказано значення діапазону, неможливо отримати середній елемент.")
+			print(f"Символів у файлі : {len(text)}")
+			print("Ви отримали середній елемент зі зміщенням ліворуч.")
+
 		return bloks
-	else :
-		print("Не правильно вказано значення діапазону, неможливо отримати середній елемент.")
-		print(f"Символів у файлі : {len(text)}")
-		print("Введіть діапазон тієї ж парності!")
-		return None
+	except TypeError:
+		print("Не правильно вказані дані. Кількість символів - це натуральне число.")
+	except FileNotFoundError:
+		print("Не правильно вказане ім'я файлу!")
+		
 	
 
 
-print(text_slice('text_1.txt', 3))
+#print(text_slice('text_1.txt', 3))
 
