@@ -91,7 +91,7 @@ def withdraw_cash(name):
 def top_up_account(name):
 	cash = int(input('Яку суму ви бажаєте покласти на рахунок? (тільки додатні числа) \n'))
 	if cash < 0:
-		return "Ви не можете знімати від'ємні суми!"
+		return "Ви не можете додавати від'ємні значення!"
 	balance = int(chek_balance(name))
 	name_balance_file = name + "_balance.txt"
 	with open(name_balance_file, 'wt') as file_balance:
