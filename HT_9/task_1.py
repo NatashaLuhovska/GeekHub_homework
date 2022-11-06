@@ -21,36 +21,22 @@
     що б ми могли його використати'''
 
 
- #  sqlite_connection = sqlite3.connect('ATM_2_0.db')
- #   sqlite_create_table_query = '''CREATE TABLE Users (
- #                               id INTEGER PRIMARY KEY,
- #                               login TEXT NOT NULL UNIQUE,
- #                               password text NOT NULL,
- #                               balance REAL NOT NULL);'''
+  '''CREATE TABLE Users (id INTEGER PRIMARY KEY,
+login TEXT NOT NULL UNIQUE, password text NOT NULL, balance REAL NOT NULL);'''
 
- #    sqlite_create_table_query = '''CREATE TABLE Transactions (
- #                              id INTEGER PRIMARY KEY,
- #                               login TEXT NOT NULL,
- #                               time_operation datetime,
- #                               type text NOT NULL,
- #                              amount_of_money REAL NOT NULL);'''
+'''CREATE TABLE Transactions (id INTEGER PRIMARY KEY,
+login TEXT NOT NULL, time_operation datetime,
+type text NOT NULL, amount_of_money REAL NOT NULL);'''
 
- #sqlite_create_table_query = '''CREATE TABLE Collector_table (
- #                              id INTEGER PRIMARY KEY,
- #                              time_operation datetime,
- #                              operation text NOT NULL);'''
+'''CREATE TABLE Collector_table (id INTEGER PRIMARY KEY,
+    time_operation datetime,operation text NOT NULL);'''
 
+ '''CREATE TABLE Bills (id INTEGER PRIMARY KEY,
+nominal TEXT NOT NULL UNIQUE, count INTEGER NOT NULL);'''
 
-#sqlite_create_table_query = '''CREATE TABLE Bills (
-#                                id INTEGER PRIMARY KEY,
-#                                nominal TEXT NOT NULL UNIQUE,
-#                                count INTEGER NOT NULL);'''
-
-#sqlite_create_table_query = '''CREATE TABLE ATM_operations (
-#                                id INTEGER PRIMARY KEY,
-#                                time_operation datetime,
-#                                login TEXT NOT NULL,
-#                                operation text NOT NULL);'''
+ '''CREATE TABLE ATM_operations (id INTEGER PRIMARY KEY,
+time_operation datetime, login TEXT NOT NULL,
+operation text NOT NULL);'''
 
 ######################### IMPORT #################################
 
@@ -85,6 +71,7 @@ def check_in_system(name):
         return True
     else:
         return False
+
 
 def creat_new_user():
     name = input("Введіть Ваше логін: \n")
@@ -194,8 +181,8 @@ def top_up_account(name):
 
 
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-########################### COLLECTOR FUNTIONS ################################
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+########################### COLLECTOR FUNTIONS ####################################
 
 def count_total():
     total = 0
@@ -230,10 +217,6 @@ def change_bill_count():
     cursor.execute("INSERT INTO ATM_operations (id, time_operation, login, operation) VALUES \
         (?,?,?,?)", (operation_id, datetime.datetime.now(), 'admin', 'change bill count'))
     sqlite_connection.commit()
-
-
-  
-
 
 
 
@@ -310,10 +293,7 @@ def start():
                 print("Не правильно введене значення!")
             print('%%%%%%%%%%%%%%%%%%%%%%%%%%')
 
-
-
-
-
+#########################################################################################
 
 try:
     sqlite_connection = sqlite3.connect('ATM_2_0.db')
