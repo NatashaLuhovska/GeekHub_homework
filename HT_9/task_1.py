@@ -21,22 +21,22 @@
     що б ми могли його використати'''
 
 
-  '''CREATE TABLE Users (id INTEGER PRIMARY KEY,
-login TEXT NOT NULL UNIQUE, password text NOT NULL, balance REAL NOT NULL);'''
+#CREATE TABLE Users (id INTEGER PRIMARY KEY,
+#login TEXT NOT NULL UNIQUE, password text NOT NULL, balance REAL NOT NULL);
 
-'''CREATE TABLE Transactions (id INTEGER PRIMARY KEY,
-login TEXT NOT NULL, time_operation datetime,
-type text NOT NULL, amount_of_money REAL NOT NULL);'''
+#CREATE TABLE Transactions (id INTEGER PRIMARY KEY,
+#login TEXT NOT NULL, time_operation datetime,
+#type text NOT NULL, amount_of_money REAL NOT NULL);
 
-'''CREATE TABLE Collector_table (id INTEGER PRIMARY KEY,
-    time_operation datetime,operation text NOT NULL);'''
+#CREATE TABLE Collector_table (id INTEGER PRIMARY KEY,
+#    time_operation datetime,operation text NOT NULL);
 
- '''CREATE TABLE Bills (id INTEGER PRIMARY KEY,
-nominal TEXT NOT NULL UNIQUE, count INTEGER NOT NULL);'''
+ #CREATE TABLE Bills (id INTEGER PRIMARY KEY,
+#nominal TEXT NOT NULL UNIQUE, count INTEGER NOT NULL);
 
- '''CREATE TABLE ATM_operations (id INTEGER PRIMARY KEY,
-time_operation datetime, login TEXT NOT NULL,
-operation text NOT NULL);'''
+# CREATE TABLE ATM_operations (id INTEGER PRIMARY KEY,
+#time_operation datetime, login TEXT NOT NULL,
+#operation text NOT NULL);
 
 ######################### IMPORT #################################
 
@@ -66,7 +66,7 @@ def valid_username_pass(username: str, password: str):
 
 
 def check_in_system(name):
-    if cursor.execute('''SELECT * FROM Users WHERE login='{}' '''.format(name)).fetchall():
+    if cursor.execute('''SELECT * FROM Users WHERE login= ? ''',(name,)).fetchall():
         print('Такий користувач є в системі!')
         return True
     else:
@@ -106,7 +106,7 @@ def login_user():
     for i in range(3):
         name = input("Ввведіть ім'я : ")
         password = input("Введіть пароль : ")
-        if cursor.execute('''SELECT * FROM Users WHERE login='{}' AND password='{}' '''.format(name,password)).fetchall():
+        if cursor.execute('''SELECT * FROM Users WHERE login= ? AND password= ? ''',(name,password)).fetchall():
             print(f"Вітаємо {name}!")
             operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall())+1
             cursor.execute("INSERT INTO ATM_operations (id, time_operation, login, operation) VALUES \
@@ -125,7 +125,7 @@ def chek_balance(name):
     cursor.execute("INSERT INTO ATM_operations (id, time_operation, login, operation) VALUES \
         (?,?,?,?)", (operation_id, datetime.datetime.now(), name, 'chek balance'))
     sqlite_connection.commit()
-    return cursor.execute('''SELECT balance FROM Users WHERE login='{}' '''.format(name)).fetchall()[0][0]
+    return cursor.execute('''SELECT balance FROM Users WHERE login= ? ''',(name,)).fetchall()[0][0]
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 ############################## WITHDRAW CASH ##################################
@@ -134,16 +134,16 @@ def withdraw_cash(name):
     cash = int(input('Яку суму ви бажаєте зняти (тільки додатні числа)\n'))
     if cash < 0:
         return "Ви не можете знімати від'ємні суми!"
-    balance = cursor.execute('''SELECT balance FROM Users WHERE login='{}' '''.format(name)).fetchall()[0][0]
+    balance = cursor.execute('''SELECT balance FROM Users WHERE login= ? ''',(name,)).fetchall()[0][0]
     if cash > balance:
         print("Сума перевищує ваш поточний баланс на карті.")
         return "Змініть суму, на ту, що не перевищує Ваш баланс. "
-    balance_ATM = cursor.execute('''SELECT count FROM Bills WHERE nominal='{}' '''.format("Total")).fetchall()[0][0]
+    balance_ATM = cursor.execute('''SELECT count FROM Bills WHERE nominal= ? ''',("Total",)).fetchall()[0][0]
     if cash > balance_ATM:
         print("Сума перевищує наш поточний баланс в банкоматі.")
         return "Змініть суму, ту, що не перевищує баланс. "
     balance -= cash
-    cursor.execute('''UPDATE Users SET balance='{}' WHERE login='{}' '''.format(balance, name))
+    cursor.execute('''UPDATE Users SET balance= ? WHERE login= ? ''',(balance, name))
     sqlite_connection.commit()
     transaction_id = len(cursor.execute("SELECT * FROM Transactions").fetchall())+1
     cursor.execute("INSERT INTO Transactions (id, login, time_operation, type, amount_of_money) VALUES \
@@ -163,10 +163,10 @@ def top_up_account(name):
     cash = int(input('Яку суму ви бажаєте покласти на рахунок? (тільки додатні числа) \n'))
     if cash < 0:
         return "Ви не можете додавати від'ємні значення!"
-    balance = balance = cursor.execute('''SELECT balance FROM Users WHERE login='{}' '''.format(name)).fetchall()[0][0]
+    balance = balance = cursor.execute('''SELECT balance FROM Users WHERE login= ? ''',(name,)).fetchall()[0][0]
     new_cash = cash // 10 *10 
     balance += new_cash  
-    cursor.execute('''UPDATE Users SET balance='{}' WHERE login='{}' '''.format(balance, name))
+    cursor.execute('''UPDATE Users SET balance= ? WHERE login= ? ''',(balance, name))
     sqlite_connection.commit()
     transaction_id = len(cursor.execute("SELECT * FROM Transactions").fetchall())+1
     cursor.execute("INSERT INTO Transactions (id, login, time_operation, type, amount_of_money) VALUES \
@@ -189,7 +189,7 @@ def count_total():
     for row in cursor.execute("SELECT * FROM Bills"):
         if row[1] != "Total":
             total += int(row[1]) * row[2]
-    cursor.execute('''UPDATE Bills SET count='{}' WHERE nominal='{}' '''.format(total, "Total"))
+    cursor.execute('''UPDATE Bills SET count= ? WHERE nominal= ? ''',(total, "Total"))
     sqlite_connection.commit()  
 
 def chek_bills():
@@ -206,7 +206,7 @@ def chek_bills():
 def change_bill_count():
     bill = input("Введіть номінал купюри : \n")
     count_bill = int(input("Введіть кількість купюр: \n"))
-    cursor.execute('''UPDATE Bills SET count='{}' WHERE nominal='{}' '''.format(count_bill, bill))
+    cursor.execute('''UPDATE Bills SET count= ? WHERE nominal= ? ''',(count_bill, bill))
     sqlite_connection.commit()
     count_total()
     change_bill_id = len(cursor.execute("SELECT * FROM Collector_table").fetchall())+1
