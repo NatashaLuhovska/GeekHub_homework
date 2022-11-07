@@ -39,7 +39,6 @@
 #operation text NOT NULL);
 
 
-
 import datetime
 import sqlite3
 
@@ -62,7 +61,7 @@ def valid_username_pass(username: str, password: str):
 
 
 def check_in_system(name):
-    if cursor.execute('''SELECT * FROM Users WHERE login= ? ''',(name,)).fetchall():
+    if cursor.execute('''SELECT * FROM Users WHERE login= ? ''', (name,)).fetchall():
         print('Такий користувач є в системі!')
         return True
     else:
@@ -72,7 +71,6 @@ def check_in_system(name):
 def creat_new_user():
     name = input("Введіть Ваше логін: \n")
     password = input("Введіть пароль: \n")
-    
     while not valid_username_pass(name, password) or check_in_system(name):
         print("Якщо ви бажаєте продовжити реєстрацію натисніть - 1, інакше натисніть - 0.")
         if input() == '0':
@@ -84,13 +82,12 @@ def creat_new_user():
         if not valid_username_pass(name, password):
             name = input("Введіть Ваше логін: \n")
             password = input("Введіть пароль: \n")
-
     if valid_username_pass(name, password):
-        user_id = len(cursor.execute("SELECT * FROM Users").fetchall())+1
+        user_id = len(cursor.execute("SELECT * FROM Users").fetchall()) + 1
         cursor.execute("INSERT INTO Users (id, login, password, balance) VALUES \
             (?,?,?,?)", (user_id, name, password, 0))
         sqlite_connection.commit()
-        operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall())+1
+        operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall()) + 1
         cursor.execute("INSERT INTO ATM_operations (id, time_operation, login, operation) VALUES \
             (?,?,?,?)", (operation_id, datetime.datetime.now(), name, 'creat new user'))
         sqlite_connection.commit()
@@ -101,7 +98,7 @@ def login_user():
     for i in range(3):
         name = input("Ввведіть ім'я : ")
         password = input("Введіть пароль : ")
-        if cursor.execute('''SELECT * FROM Users WHERE login= ? AND password= ? ''',(name,password)).fetchall():
+        if cursor.execute('''SELECT * FROM Users WHERE login= ? AND password= ? ''', (name, password)).fetchall():
             print(f"Вітаємо {name}!")
             operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall())+1
             cursor.execute("INSERT INTO ATM_operations (id, time_operation, login, operation) VALUES \
@@ -114,33 +111,33 @@ def login_user():
 
 
 def chek_balance(name):
-    operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall())+1
+    operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall()) + 1
     cursor.execute("INSERT INTO ATM_operations (id, time_operation, login, operation) VALUES \
         (?,?,?,?)", (operation_id, datetime.datetime.now(), name, 'chek balance'))
     sqlite_connection.commit()
-    return cursor.execute('''SELECT balance FROM Users WHERE login= ? ''',(name,)).fetchall()[0][0]
+    return cursor.execute('''SELECT balance FROM Users WHERE login= ? ''', (name,)).fetchall()[0][0]
 
 
 def withdraw_cash(name):
     cash = int(input('Яку суму ви бажаєте зняти (тільки додатні числа)\n'))
     if cash < 0:
         return "Ви не можете знімати від'ємні суми!"
-    balance = cursor.execute('''SELECT balance FROM Users WHERE login= ? ''',(name,)).fetchall()[0][0]
+    balance = cursor.execute('''SELECT balance FROM Users WHERE login= ? ''', (name,)).fetchall()[0][0]
     if cash > balance:
         print("Сума перевищує ваш поточний баланс на карті.")
         return "Змініть суму, на ту, що не перевищує Ваш баланс. "
-    balance_ATM = cursor.execute('''SELECT count FROM Bills WHERE nominal= ? ''',("Total",)).fetchall()[0][0]
+    balance_ATM = cursor.execute('''SELECT count FROM Bills WHERE nominal= ? ''', ("Total",)).fetchall()[0][0]
     if cash > balance_ATM:
         print("Сума перевищує наш поточний баланс в банкоматі.")
         return "Змініть суму, ту, що не перевищує баланс. "
     balance -= cash
-    cursor.execute('''UPDATE Users SET balance= ? WHERE login= ? ''',(balance, name))
+    cursor.execute('''UPDATE Users SET balance= ? WHERE login= ? ''', (balance, name))
     sqlite_connection.commit()
-    transaction_id = len(cursor.execute("SELECT * FROM Transactions").fetchall())+1
+    transaction_id = len(cursor.execute("SELECT * FROM Transactions").fetchall()) + 1
     cursor.execute("INSERT INTO Transactions (id, login, time_operation, type, amount_of_money) VALUES \
         (?,?,?,?,?)", (transaction_id, name, datetime.datetime.now(), 'withdraw cash', cash))
     sqlite_connection.commit()
-    operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall())+1
+    operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall()) + 1
     cursor.execute("INSERT INTO ATM_operations (id, time_operation, login, operation) VALUES \
         (?,?,?,?)", (operation_id, datetime.datetime.now(), name, 'withdraw cash'))
     sqlite_connection.commit()
@@ -151,22 +148,20 @@ def top_up_account(name):
     cash = int(input('Яку суму ви бажаєте покласти на рахунок? (тільки додатні числа) \n'))
     if cash < 0:
         return "Ви не можете додавати від'ємні значення!"
-    balance = balance = cursor.execute('''SELECT balance FROM Users WHERE login= ? ''',(name,)).fetchall()[0][0]
+    balance = cursor.execute('''SELECT balance FROM Users WHERE login= ? ''', (name,)).fetchall()[0][0]
     new_cash = cash // 10 *10 
     balance += new_cash  
-    cursor.execute('''UPDATE Users SET balance= ? WHERE login= ? ''',(balance, name))
+    cursor.execute('''UPDATE Users SET balance= ? WHERE login= ? ''', (balance, name))
     sqlite_connection.commit()
-    transaction_id = len(cursor.execute("SELECT * FROM Transactions").fetchall())+1
+    transaction_id = len(cursor.execute("SELECT * FROM Transactions").fetchall()) + 1
     cursor.execute("INSERT INTO Transactions (id, login, time_operation, type, amount_of_money) VALUES \
         (?,?,?,?,?)", (transaction_id, name, datetime.datetime.now(), 'top up account', new_cash))
     sqlite_connection.commit()
-    operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall())+1
+    operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall()) + 1
     cursor.execute("INSERT INTO ATM_operations (id, time_operation, login, operation) VALUES \
         (?,?,?,?)", (operation_id, datetime.datetime.now(), name, 'top up account'))
     sqlite_connection.commit()
     return f"Операція успішна! На рахунок зараховано: {new_cash}. Решта: {cash - new_cash}"
-
-
 
 
 def count_total():
@@ -174,35 +169,33 @@ def count_total():
     for row in cursor.execute("SELECT * FROM Bills"):
         if row[1] != "Total":
             total += int(row[1]) * row[2]
-    cursor.execute('''UPDATE Bills SET count= ? WHERE nominal= ? ''',(total, "Total"))
+    cursor.execute('''UPDATE Bills SET count= ? WHERE nominal= ? ''', (total, "Total"))
     sqlite_connection.commit()  
 
 def chek_bills():
     print(f'{"Bill":15} {"Count"}')
     for row in cursor.execute("SELECT * FROM Bills"):
         print(f'{row[1]:15} {row[2]}')
-    operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall())+1
+    operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall()) + 1
     cursor.execute("INSERT INTO ATM_operations (id, time_operation, login, operation) VALUES \
         (?,?,?,?)", (operation_id, datetime.datetime.now(), 'admin', 'chek bills'))
     sqlite_connection.commit()
 
 
-
 def change_bill_count():
     bill = input("Введіть номінал купюри : \n")
     count_bill = int(input("Введіть кількість купюр: \n"))
-    cursor.execute('''UPDATE Bills SET count= ? WHERE nominal= ? ''',(count_bill, bill))
+    cursor.execute('''UPDATE Bills SET count= ? WHERE nominal= ? ''', (count_bill, bill))
     sqlite_connection.commit()
     count_total()
-    change_bill_id = len(cursor.execute("SELECT * FROM Collector_table").fetchall())+1
+    change_bill_id = len(cursor.execute("SELECT * FROM Collector_table").fetchall()) + 1
     cursor.execute("INSERT INTO Collector_table (id, time_operation, operation) VALUES \
         (?,?,?)", (change_bill_id, datetime.datetime.now(), f'change bill {bill} count {count_bill}'))
     sqlite_connection.commit()
-    operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall())+1
+    operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall()) + 1
     cursor.execute("INSERT INTO ATM_operations (id, time_operation, login, operation) VALUES \
         (?,?,?,?)", (operation_id, datetime.datetime.now(), 'admin', 'change bill count'))
     sqlite_connection.commit()
-
 
 
 def start():
@@ -280,20 +273,20 @@ def start():
 
 
 
+
 try:
-    sqlite_connection = sqlite3.connect('ATM_2_0.db')
+    sqlite_connection = sqlite3.connect("ATM_2_0.db")
     cursor = sqlite_connection.cursor()
-
     print(start())
-
     cursor.close()
-
+    sqlite_connection.close()
 except sqlite3.Error as error:
     print("Помилка при подключенні до sqlite", error)
-finally:
-    if (sqlite_connection):
-        sqlite_connection.close()
-        print("Роботу з банкоматом завершено!")
+except Exception as err:
+    print("Виникла помилка: ", err)
+    print("Банкомат тимчасово не працює.")
+else:
+    print("Роботу з банкоматом завершено!")
 
 
 
