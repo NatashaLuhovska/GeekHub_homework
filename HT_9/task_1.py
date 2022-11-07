@@ -38,15 +38,11 @@
 #time_operation datetime, login TEXT NOT NULL,
 #operation text NOT NULL);
 
-######################### IMPORT #################################
+
 
 import datetime
 import sqlite3
 
-
-###################################################################
-
-####################### CREAT NEW USER ############################
 
 def valid_username_pass(username: str, password: str):
    if len(username) < 3 or len(username) >= 50:
@@ -100,7 +96,6 @@ def creat_new_user():
         sqlite_connection.commit()
         return name
 
-########################### LOGIN USER #########################################
 
 def login_user():
     for i in range(3):
@@ -115,10 +110,8 @@ def login_user():
             return name
         else:
             print(f"Не правильно введені дані, у вас лишилося {2 - i} спроби")
-            return False
+    return False
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-############################### CHEK BALANCE ##################################
 
 def chek_balance(name):
     operation_id = len(cursor.execute("SELECT * FROM ATM_operations").fetchall())+1
@@ -127,8 +120,6 @@ def chek_balance(name):
     sqlite_connection.commit()
     return cursor.execute('''SELECT balance FROM Users WHERE login= ? ''',(name,)).fetchall()[0][0]
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-############################## WITHDRAW CASH ##################################
 
 def withdraw_cash(name):
     cash = int(input('Яку суму ви бажаєте зняти (тільки додатні числа)\n'))
@@ -156,9 +147,6 @@ def withdraw_cash(name):
     return "Операція успішна!"
 
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-########################### TOP UP ACCOUNT ####################################
-
 def top_up_account(name):
     cash = int(input('Яку суму ви бажаєте покласти на рахунок? (тільки додатні числа) \n'))
     if cash < 0:
@@ -180,9 +168,6 @@ def top_up_account(name):
 
 
 
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-########################### COLLECTOR FUNTIONS ####################################
 
 def count_total():
     total = 0
@@ -220,9 +205,6 @@ def change_bill_count():
 
 
 
-##############################################################################################
-##############################################################################################
-
 def start():
     print("Вітаємо!")
     print('%%%%%%%%%%%%%%%%%%%%%%%%%%') 
@@ -239,6 +221,9 @@ def start():
         name = login_user()
     elif operation == '2':
         name = creat_new_user()
+    else:
+        print("Не правильно введене значення!")
+        return False
 
     if not name:
         print("Зверніться, будь ласка, в банк, для вирішення вашої проблеми.")
@@ -293,7 +278,7 @@ def start():
                 print("Не правильно введене значення!")
             print('%%%%%%%%%%%%%%%%%%%%%%%%%%')
 
-#########################################################################################
+
 
 try:
     sqlite_connection = sqlite3.connect('ATM_2_0.db')
@@ -308,7 +293,7 @@ except sqlite3.Error as error:
 finally:
     if (sqlite_connection):
         sqlite_connection.close()
-        print("З'єднання з SQLite закрито")
+        print("Роботу з банкоматом завершено!")
 
 
 
