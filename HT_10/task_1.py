@@ -37,19 +37,19 @@ import random
 
 def valid_username_pass(username: str, password: str):
     if len(username) < 3 or len(username) >= 50:
-       print("Логін повинно бути не меншим за 3 символа і не більшим за 50!")
-       return False
+        print("Логін повинно бути не меншим за 3 символа і не більшим за 50!")
+        return False
     if len(password) < 8:
-       print("Пароль повинен бути не меншим за 8 символів!")
-       return False
+        print("Пароль повинен бути не меншим за 8 символів!")
+        return False
     if not any(elem.isdigit() for elem in password):
-       print("Пароль повинен мати хоча б одну цифру!")
-       return False
+        print("Пароль повинен мати хоча б одну цифру!")
+        return False
     if not any(elem.islower() for elem in password) or not any(elem.isupper() for elem in password):
-       print("Пароль повинен мати хоча б один символ у верхньому та нижньому регістрах!")
-       return False
+        print("Пароль повинен мати хоча б один символ у верхньому та нижньому регістрах!")
+        return False
     else:
-       return True
+        return True
 
 
 def check_in_system(name):
@@ -127,8 +127,6 @@ def bills_available(bills):
 
 
 def bills_for_issuance(num, bills):
-    new_bills = {}
-    bills_issuance = {}
     bills_avail = []
     for key, values in bills.items():
         if values > 0 :
@@ -397,23 +395,23 @@ def menu_for_users(name):
 
 
 def start():
-	while True:
-		name = menu_1()
-		if not name:
-			print("Зверніться, будь ласка, в банк, для вирішення вашої проблеми.")
-			return None
-		elif name == "Exit":
-			return "Роботу завершено!"
-		elif name == 'admin':
-			while True:
-				result = menu_for_admin()
-				if result == "Main menu":
-					break
-		else:
-			while True:
-				result = menu_for_users(name)
-				if result == "Main menu":
-					break
+    while True:
+        name = menu_1()
+        if not name:
+            print("Зверніться, будь ласка, в банк, для вирішення вашої проблеми.")
+            return None
+        elif name == "Exit":
+            return "Роботу завершено!"
+        elif name == 'admin':
+            while True:
+                result = menu_for_admin()
+                if result == "Main menu":
+                    break
+        else:
+            while True:
+                result = menu_for_users(name)
+                if result == "Main menu":
+                    break
 
 
 try:
