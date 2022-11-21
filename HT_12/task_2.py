@@ -26,20 +26,25 @@ class Person:
 				if books == None:
 					cursor.execute('''UPDATE students SET books= ? WHERE first_name= ? AND last_name= ? ''',
 									(str(id_book), self.first_name, self.last_name))
+					conn.commit()
 				else:
 					cursor.execute('''UPDATE students SET books= ? WHERE first_name= ? AND last_name= ? ''',
 									(books + ' '+str(id_book), self.first_name, self.last_name))
+					conn.commit()
 			elif self.profession == 'teachers':
 				books = cursor.execute('''SELECT books FROM teachers WHERE first_name= ? AND last_name= ? ''',
 										(self.first_name, self.last_name)).fetchall()[0][0]
 				if books == None:
 					cursor.execute('''UPDATE teachers SET books= ? WHERE first_name= ? AND last_name= ? ''',
 									(str(id_book), self.first_name, self.last_name))
+					conn.commit()
 				else:
 					cursor.execute('''UPDATE teachers SET books= ? WHERE first_name= ? AND last_name= ? ''',
 									(books + ' '+str(id_book), self.first_name, self.last_name))
+					conn.commit()
 			amount_book = cursor.execute('''SELECT amount FROM books WHERE book_id= ? ''', (id_book, )).fetchall()[0][0]
 			cursor.execute('''UPDATE books SET amount= ? WHERE book_id= ? ''', (amount_book-1, id_book))
+			conn.commit()
 			print(f"Дані внесені в Вашу картку!")
 		else:
 			print("Не коректно введені дані!")
@@ -51,6 +56,8 @@ class Person:
 		elif self.profession == 'teachers':
 			books = cursor.execute('''SELECT books FROM teachers WHERE first_name= ? AND last_name= ? ''',
 									(self.first_name, self.last_name)).fetchall()[0][0]
+		if books == None:
+			return None
 		for book_id in books.split(' '):
 			print(cursor.execute('''SELECT * FROM books WHERE book_id= ? ''', (int(book_id), )).fetchall())
 		return books.split(' ')
@@ -58,17 +65,23 @@ class Person:
 	def hand_in_the_book(self):
 		print("Книги, доступні до видачі:")
 		list_book_id = self.list_books_in_person()
+		if list_book_id == None:
+			print("Ви не маєте жодної книги на руках в даний момент. Можливо якась книга Вас цікавить?")
+			return False
 		id_book = input("Введіть номер обраної книги : ")
 		if id_book in list_book_id:
 			list_book_id.remove(id_book)
 			if self.profession == 'students':
 				cursor.execute('''UPDATE students SET books= ? WHERE first_name= ? AND last_name= ? ''',
 								(' '.join(list_book_id), self.first_name, self.last_name))
+				conn.commit()
 			elif self.profession == 'teachers':
 				cursor.execute('''UPDATE teachers SET books= ? WHERE first_name= ? AND last_name= ? ''',
 								(' '.join(list_book_id), self.first_name, self.last_name))
+				conn.commit()
 			amount_book = cursor.execute('''SELECT amount FROM books WHERE book_id= ? ''', (int(id_book), )).fetchall()[0][0]
 			cursor.execute('''UPDATE books SET amount= ? WHERE book_id= ? ''', (amount_book+1, int(id_book)))
+			conn.commit()
 			print(f"Дані внесені в Вашу картку!")
 		else:
 			print("Не коректно введені дані!")
@@ -121,6 +134,7 @@ class Librarian:
 			cursor.execute('''
 						INSERT INTO students (student_id, first_name, last_name, age, group_name, course, books)
 						VALUES (?,?,?,?,?,?,?) ''', (id_student, first_name, last_name, age, group_name, course, None))
+			conn.commit()
 			return Student(first_name, last_name, age, group_name, course)
 		elif profession == 'вчитель':
 			first_name = input("Введіть ім'я:")
@@ -131,6 +145,7 @@ class Librarian:
 			cursor.execute('''
 						INSERT INTO teachers (teacher_id, first_name, last_name, age, subject, books)
 						VALUES (?,?,?,?,?,?) ''', (id_teacher, first_name, last_name, age, subject, None))
+			conn.commit()
 			return Teacher(first_name, last_name, age, subject)
 		else:
 			print("Не коректно введені дані!")
