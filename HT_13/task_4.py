@@ -19,7 +19,7 @@ class MyList(list):
 k = MyList(3,4,7,8,5,7)
 print(k[1])
 print(k[4])
-#print(k[0])
-print(k[2:4])
+print(k[0])
+
 
 	
