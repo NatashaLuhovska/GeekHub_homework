@@ -9,8 +9,10 @@
 При чому якщо description дорівнює None, то відповідне property має повертати рядок "No description provided". 
 Додатково реалізуйте властивість usd, що має повертати суму переказу у доларах (сума * курс)'''
 
+
 class Transaction:
-	def __init__(self, amount, date, currency = 'USD', usd_conversion_rate = 1.0, description = None):
+
+	def __init__(self, amount, date, currency='USD', usd_conversion_rate=1.0, description=None):
 		self._amount = amount
 		self._date = date
 		self._currency = currency
@@ -44,7 +46,7 @@ class Transaction:
 		else:
 			return self._description
 	
-transaction = Transaction(400,'23.12.2022','USD',0.027)
+transaction = Transaction(400, '23.12.2022', 'USD', 0.027)
 print(transaction.amount)
 print(transaction.date)
 print(transaction.currency)

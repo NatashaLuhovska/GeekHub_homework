@@ -3,6 +3,7 @@
  операція car1 - car2 повинна повернути різницю між роками випуску. '''
 
 class Car:
+
     def __init__(self, year):
         self.year = year
 

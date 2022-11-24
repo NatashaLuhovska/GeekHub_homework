@@ -20,7 +20,7 @@ P.P.S. Вивід не обов’язково оформлювати у виг�
 
 
 class Matrix:
-	def __init__(self,number_of_rows, number_of_columns):
+	def __init__(self, number_of_rows, number_of_columns):
 		self.number_of_rows = number_of_rows
 		self.number_of_columns = number_of_columns
 		self.matrix = [[0 for j in range(number_of_columns)] for i in range(number_of_rows)]
@@ -45,8 +45,6 @@ class Matrix:
 		self.matrix = t_matrix
 
 		
-
-
 matrix_1 = Matrix(3, 2)
 matrix_1.print_out()
 matrix_1.fill()
