@@ -21,7 +21,10 @@ class Transaction:
 
 	@property
 	def usd(self):
-		return self._amount * self._usd_conversion_rate
+		if self.currency == 'USD':
+			return self.amount
+		else:
+			return self.amount * self.usd_conversion_rate
 
 	@property
 	def amount(self):
@@ -41,10 +44,11 @@ class Transaction:
 
 	@property
 	def description(self):
-		if self._description == None:
-			return "No description provided"
-		else:
+		if self._description:
 			return self._description
+		else:
+			return "No description provided"
+			
 	
 transaction = Transaction(400, '23.12.2022', 'USD', 0.027)
 print(transaction.amount)
