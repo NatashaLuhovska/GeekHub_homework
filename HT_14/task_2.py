@@ -7,7 +7,7 @@
 from urllib.parse import urljoin
 import requests
 import json
-from datetime import timedelta, date, datetime
+from datetime import timedelta, datetime
 
 
 class ExchangeRateParser:
@@ -22,9 +22,14 @@ class ExchangeRateParser:
 			date_number = single_date.strftime('%d.%m.%Y')
 			exchange_rate_page = requests.get(self.IN_BANK_RATE_URL, {'date': date_number}).text
 			cours_list_in_bank = json.loads(exchange_rate_page)['exchangeRate']
+			flag = True
 			for i in cours_list_in_bank:
 				if i['currency'] == currency:
 					print_rate(date_number, i)
+					flag = False
+					break
+			if flag:
+				print(date_number, f"Дані за цей день за обраною валютою({currency}) відсутні.")
 
 
 def print_rate(date, rate_dict):
@@ -40,14 +45,15 @@ def check_correct_date(day, month, year):
 
 def get_date():
 	try:
-		day = input("Введіть день (число від 1 до 31):")
-		month = input("Введіть місяць (число від 1 до 12):")
-		year = input("Введіть рік (число від 2018 до 2022):")
-		date = datetime.strptime(year+'.'+month+'.'+day, '%Y.%m.%d')
+		print("Введіть дату у форматі: рік.місяць.день (дані вказуйте через крапку)")
+		print("Приклад запису дати: 2020.10.20")
+		day = input("")
+		date = datetime.strptime(day, '%Y.%m.%d')
 	except ValueError:
 		print("Не коректно введені дані! Такої дати не існує!")
 	else:
-		if check_correct_date(day, month, year):
+		date_ch = datetime.now() - timedelta(days=1459)
+		if check_correct_date(day.split('.')[2], day.split('.')[1], day.split('.')[0]) and date > date_ch:
 			return date
 		else:
 			return False
@@ -87,6 +93,8 @@ def menu_for_users():
 				my_ex.get_exchange_rate(start_date, end_date, currency)
 			else:
 				print('Не правильно введене значення!!!')
+		else:
+			print("Ви вийшли за рамки вказаного періоду.")
 	elif period == '2':
 		print("Введіть дані першого дня бажаного періоду:")
 		start_date = get_date()
@@ -100,6 +108,8 @@ def menu_for_users():
 				my_ex.get_exchange_rate(start_date, end_date, currency)
 			else:
 				print('Не правильно введене значення!!!')
+		else:
+			print("Ви вийшли за рамки вказаного періоду.")
 	
 
 menu_for_users()
