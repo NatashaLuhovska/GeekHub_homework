@@ -43,15 +43,14 @@ class SiteQuotesParser:
         quotes = page_soup.select('.quote')
         return [self.parse_single_quote(quote_soup) for quote_soup in quotes]
        
-    @staticmethod
-    def parse_single_quote(quote_soup: BeautifulSoup) -> Quote:
+    def parse_single_quote(self, quote_soup: BeautifulSoup) -> Quote:
         return Quote(
             quote=quote_soup.select_one('.text').text,
             author=quote_soup.select_one('.author').text,
             tags=quote_soup.select_one('.keywords')['content'],
-            born_date=SiteQuotesParser().get_site_about_author(quote_soup,'.author-born-date'),
-            born_location=SiteQuotesParser().get_site_about_author(quote_soup, '.author-born-location'),
-            description_author=SiteQuotesParser().get_site_about_author(quote_soup, '.author-description')
+            born_date=self.get_site_about_author(quote_soup,'.author-born-date'),
+            born_location=self.get_site_about_author(quote_soup, '.author-born-location'),
+            description_author=self.get_site_about_author(quote_soup, '.author-description')
         )
 
     def write_quotes_to_csv(self, quotes: [Quote]):

@@ -6,7 +6,7 @@
 
 from urllib.parse import urljoin
 import requests
-import json
+
 from datetime import timedelta, datetime
 
 
@@ -20,43 +20,36 @@ class ExchangeRateParser:
 		print(f" Дата        Валюта      Купівля    Продаж ")
 		for single_date in [d for d in (start_date + timedelta(n) for n in range(day_count)) if d <= end_date]:
 			date_number = single_date.strftime('%d.%m.%Y')
-			exchange_rate_page = requests.get(self.IN_BANK_RATE_URL, {'date': date_number}).text
-			cours_list_in_bank = json.loads(exchange_rate_page)['exchangeRate']
+			exchange_rate_page = requests.get(self.IN_BANK_RATE_URL, {'date': date_number})
+			cours_list_in_bank = exchange_rate_page.json()['exchangeRate']
 			flag = True
 			for i in cours_list_in_bank:
 				if i['currency'] == currency:
-					print_rate(date_number, i)
+					self.print_rate(date_number, i)
 					flag = False
 					break
 			if flag:
 				print(date_number, f"Дані за цей день за обраною валютою({currency}) відсутні.")
 
+	@staticmethod
+	def print_rate(date, rate_dict):
+		print(f" {date:12} {rate_dict['currency']:8} {rate_dict['purchaseRateNB']:9} {rate_dict['saleRateNB']:10} ")
 
-def print_rate(date, rate_dict):
-	print(f" {date:12} {rate_dict['currency']:8} {rate_dict['purchaseRateNB']:9} {rate_dict['saleRateNB']:10} ")
-
-
-def check_correct_date(day, month, year):
-	if 1 <= int(day) <= 31 and 1 <= int(month) <= 12 and 2018 <= int(year) <= 2022:
-		return True
-	else:
-		return False
-
-
-def get_date():
-	try:
-		print("Введіть дату у форматі: рік.місяць.день (дані вказуйте через крапку)")
-		print("Приклад запису дати: 2020.10.20")
-		day = input("")
-		date = datetime.strptime(day, '%Y.%m.%d')
-	except ValueError:
-		print("Не коректно введені дані! Такої дати не існує!")
-	else:
-		date_ch = datetime.now() - timedelta(days=1459)
-		if check_correct_date(day.split('.')[2], day.split('.')[1], day.split('.')[0]) and date > date_ch:
-			return date
+	@staticmethod
+	def get_date():
+		try:
+			print("Введіть дату у форматі: рік.місяць.день (дані вказуйте через крапку)")
+			print("Приклад запису дати: 20.10.2020")
+			day = input("")
+			date = datetime.strptime(day, '%d.%m.%Y')
+		except ValueError:
+			print("Не коректно введені дані! Такої дати не існує!")
 		else:
-			return False
+			date_ch = datetime.now() - timedelta(days=1459)
+			if date > date_ch:
+				return date
+			else:
+				return False
 
 
 def menu_for_users():
@@ -68,7 +61,7 @@ def menu_for_users():
 			EUR		євро
 			CHF		швейцарський франк
 			GBP		британський фунт
-			PLZ		польський злотий
+			PLN		польський злотий
 			SEK		шведська крона
 			XAU		золото
 			CAD		канадський долар
@@ -81,35 +74,38 @@ def menu_for_users():
 
 	"""
 	print(instructions)
+	exchange = ExchangeRateParser()
 	period = input("Введіть значення:")
 	if period == '1':
-		start_date = get_date()
+		start_date = exchange.get_date()
 		end_date = start_date
 		if start_date:
-			print("Доступні для перегляду:  USD, EUR, CHF, GBP, PLZ, SEK, XAU, CAD")
+			print("Доступні для перегляду:  USD, EUR, CHF, GBP, PLN, SEK, XAU, CAD")
 			currency = input("Введіть назву валюти з перерахованих вище:")
-			if currency in ['USD', 'EUR', 'CHF', 'GBP', 'PLZ', 'SEK', 'XAU', 'CAD']:
-				my_ex = ExchangeRateParser()
-				my_ex.get_exchange_rate(start_date, end_date, currency)
+			if currency in ['USD', 'EUR', 'CHF', 'GBP', 'PLN', 'SEK', 'XAU', 'CAD']:
+				exchange.get_exchange_rate(start_date, end_date, currency)
 			else:
 				print('Не правильно введене значення!!!')
 		else:
 			print("Ви вийшли за рамки вказаного періоду.")
 	elif period == '2':
 		print("Введіть дані першого дня бажаного періоду:")
-		start_date = get_date()
+		start_date = exchange.get_date()
 		print("Введіть дані останнього дня бажаного періоду:")
-		end_date = get_date()
+		end_date = exchange.get_date()
 		if start_date and end_date:
-			print("Доступні для перегляду:  USD, EUR, CHF, GBP, PLZ, SEK, XAU, CAD")
+			print("Доступні для перегляду:  USD, EUR, CHF, GBP, PLN, SEK, XAU, CAD")
 			currency = input("Введіть назву валюти з перерахованих вище:")
-			if currency in ['USD', 'EUR', 'CHF', 'GBP', 'PLZ', 'SEK', 'XAU', 'CAD']:
-				my_ex = ExchangeRateParser()
-				my_ex.get_exchange_rate(start_date, end_date, currency)
+			if currency in ['USD', 'EUR', 'CHF', 'GBP', 'PLN', 'SEK', 'XAU', 'CAD']:
+				exchange.get_exchange_rate(start_date, end_date, currency)
 			else:
 				print('Не правильно введене значення!!!')
 		else:
 			print("Ви вийшли за рамки вказаного періоду.")
+	elif period == '3':
+		print("До зустрічі!")
+	else:
+		print("Не коректно введені значення!!!")
 	
 
 menu_for_users()

@@ -10,7 +10,7 @@ from urllib.parse import urljoin
 
 import requests
 
-import json
+
 
 
 class ATM:
@@ -99,10 +99,10 @@ class ATM:
 		return False
 
 	def get_exchange_rate(self):
-			exchange_rate_page_in_bank = requests.get(self.IN_BANK_RATE_URL).text
-			exchange_rate_page_onlin = requests.get(self.ONLINE_RATE_URL).text
-			cours_list_in_bank = json.loads(exchange_rate_page_in_bank)
-			cours_list_online = json.loads(exchange_rate_page_onlin)
+			exchange_rate_page_in_bank = requests.get(self.IN_BANK_RATE_URL)
+			exchange_rate_page_onlin = requests.get(self.ONLINE_RATE_URL)
+			cours_list_in_bank = exchange_rate_page_in_bank.json()
+			cours_list_online = exchange_rate_page_onlin.json()
 			print(' Готівковий курс гривні ПриватБанку (у відділеннях): ')
 			print(f" Валюта     Купівля       Продаж ")
 			for currency in cours_list_in_bank:
