@@ -60,10 +60,9 @@ class SiteQuotesParser:
             writer.writerows([astuple(quote) for quote in quotes])
         return
 
-    @staticmethod
-    def get_site_about_author(quote_soup: BeautifulSoup, tag: str) -> BeautifulSoup:
-        AUTHOR_URL = urljoin('http://quotes.toscrape.com/', quote_soup.select_one('span > a')['href'])
-        author_page = requests.get(AUTHOR_URL).content
+    def get_site_about_author(self, quote_soup: BeautifulSoup, tag: str) -> str:
+        author_url = urljoin(self.BASE_URL, quote_soup.select_one('span > a')['href'])
+        author_page = requests.get(author_url).content
         author_page_soup = BeautifulSoup(author_page, 'lxml')
         return author_page_soup.select_one(tag).text
 
