@@ -8,6 +8,7 @@ CsvOperations містить метод для читання даних. Мет
 import csv
 import sqlite3
 
+
 class CsvOperations:
 
 	@staticmethod
@@ -22,10 +23,11 @@ class DataBaseOperations:
 
 	@staticmethod
 	def write_to_db(item):
-			sqlite_connection = sqlite3.connect('items_rozetka.db')
-			cursor = sqlite_connection.cursor()
-			cursor.execute("INSERT INTO items (item_id, title, old_price, current_price, href, brand, category) VALUES \
-			(?,?,?,?,?,?,?)", (str(item['item_id']), str(item['title']), str(item['old_price']), str(item['current_price']), 
-				str(item['href']), str(item['brand']), str(item['category'])))
-			cursor.close()
-			sqlite_connection.close()
+		sqlite_connection = sqlite3.connect('items_rozetka.db')
+		cursor = sqlite_connection.cursor()
+		cursor.execute("INSERT INTO items (item_id, title, old_price, current_price, href, brand, category) VALUES \
+		(?,?,?,?,?,?,?)", (str(item['item_id']), str(item['title']), str(item['old_price']), str(item['current_price']), 
+			str(item['href']), str(item['brand']), str(item['category'])))
+		sqlite_connection.commit()
+		cursor.close()
+		sqlite_connection.close()

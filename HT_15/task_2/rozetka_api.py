@@ -6,11 +6,12 @@
 '''
 import requests
 
+
 class RozetkaAPI:
 	BASE_URL = 'https://rozetka.com.ua/api/product-api/v4/goods/get-main?front-type=xl&country=UA&lang=ua'
 
-	def get_item_data(self, id):
-		page = requests.get(self.BASE_URL, {'goodsId': id})
+	def get_item_data(self, elem_id):
+		page = requests.get(self.BASE_URL, {'goodsId': elem_id})
 		data = page.json().get('data')
 		item = dict()
 		item['item_id'] = data.get('id'),

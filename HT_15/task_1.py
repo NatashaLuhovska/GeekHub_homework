@@ -7,12 +7,12 @@
 
 import csv
 from dataclasses import dataclass, fields, astuple
-from fake_useragent import UserAgent
 from time import sleep
 from random import randrange
 
 import requests
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 
 
 @dataclass
@@ -34,13 +34,10 @@ class Domain:
     Price: str
 
 
-
 class SiteDomainsParser:
     BASE_URL = 'https://www.expireddomains.net/godaddy-closeout-domains/'
     DOMAIN_FIELDS = [field.name for field in fields(Domain)]
     DOMAIN_OUTPUT_CSV_PATH = 'domains.csv'
-
-
 
     def get_site_domains(self) -> [Domain]:
         with requests.Session() as session:
