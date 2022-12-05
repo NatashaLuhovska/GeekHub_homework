@@ -14,12 +14,12 @@ class RozetkaAPI:
 		page = requests.get(self.BASE_URL, {'goodsId': elem_id})
 		data = page.json().get('data')
 		item = dict()
-		item['item_id'] = data.get('id'),
-		item['title'] = data.get('title'),
-		item['old_price'] = data.get('old_price'),
-		item['current_price'] = data.get('price'),
-		item['href'] = data.get('href'),
-		item['brand'] = data.get('brand'),
+		item['item_id'] = data.get('id')
+		item['title'] = data.get('title')
+		item['old_price'] = data.get('old_price')
+		item['current_price'] = data.get('price')
+		item['href'] = data.get('href')
+		item['brand'] = data.get('brand')
 		item['category'] = data.get('category_id')
 		return item
 
