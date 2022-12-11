@@ -89,6 +89,3 @@ if __name__ == '__main__':
     site_domains = parser.get_site_domains()
     parser.write_domains_to_csv(site_domains)
 
-
-
-

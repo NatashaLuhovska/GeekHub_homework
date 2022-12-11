@@ -16,5 +16,3 @@ if __name__ == '__main__':
 		except Exception:
 			print(f"Елемента з заданим ID {id_item} не знайдено")
 	
-
-
