@@ -18,7 +18,6 @@
 
 import requests
 import os
-import time
 import shutil
 
 from webdriver_manager.chrome import ChromeDriverManager
@@ -27,7 +26,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException
 
@@ -97,7 +95,10 @@ class RobotPlacer:
 			self.submit_order()
 
 	def get_screenshot_robot(self):
-		time.sleep(1)
+		condition_1 = EC.visibility_of_element_located((By.CSS_SELECTOR,'div img[alt="Head"]'))
+		WebDriverWait(self.driver, 10).until(condition_1)
+		condition_2 = EC.visibility_of_element_located((By.CSS_SELECTOR, 'div img[alt="Body"]'))
+		WebDriverWait(self.driver, 10).until(condition_2)
 		chek_number = self.driver.find_element(By.CSS_SELECTOR,'.badge.badge-success').text
 		self._wait_for_element('[id="robot-preview-image"]')
 		robot_preview = self.driver.find_element(By.ID, 'robot-preview-image')
