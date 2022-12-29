@@ -16,9 +16,10 @@
     - замовте наступного робота (шляхом натискання відповідної кнопки)
 5. Для загального розуміння можна переглянути відео https://www.youtube.com/watch?v=0uvexJyJwxA&ab_channel=Robocorp'''
 
-import requests
 import os
 import shutil
+
+import requests
 
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver import Chrome, ChromeOptions
