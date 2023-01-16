@@ -8,10 +8,11 @@ import requests
 
 
 class RozetkaAPI:
-	BASE_URL = 'https://rozetka.com.ua/api/product-api/v4/goods/get-main?front-type=xl&country=UA&lang=ua'
+	BASE_URL = 'https://rozetka.com.ua/api/product-api/v4/goods/get-main?front-type=xl&country=UA&lang=ua&goodsId='
 
 	def get_item_data(self, elem_id):
-		page = requests.get(self.BASE_URL, {'goodsId': elem_id})
+		product_url = self.BASE_URL + f'{elem_id[0]}'
+		page = requests.get(product_url)
 		data = page.json().get('data')
 		item = dict()
 		item['item_id'] = data.get('id')
@@ -21,5 +22,6 @@ class RozetkaAPI:
 		item['href'] = data.get('href')
 		item['brand'] = data.get('brand')
 		item['category'] = data.get('category_id')
+		print(item)
 		return item
 

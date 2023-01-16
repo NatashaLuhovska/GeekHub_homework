@@ -1,0 +1,16 @@
+{% extends 'ui/base.html' %}
+{% block content %}
+<div>
+    <hr>
+    <p>Title: {{product.title}} </p>
+    <p>Product ID: {{product.product_id}} </p>
+    <p>Old price: {{product.old_price}} </p>
+    <p>Price now: {{product.current_price}}</p>
+    <p>Brand: {{product.brand}} </p>
+    <p>Category code: {{product.category}} </p>
+    <p>View details on site: <a href="{{product.href_product}}" target="_blank">View...</a></p>
+    <p>Description: <br> {{product.description}} </p>
+    <hr>
+</div>
+
+{% endblock %}
