@@ -15,7 +15,7 @@ try:
     from .local_settings import *
 except ImportError:
     BASE_DIR = Path(__file__).resolve().parent.parent
-    SECRET_KEY = 'django-insecure-esdtx(aknj1k@unxp)0ni)n)*wwn$00bv^tcsn42id=ujul!xb'
+    SECRET_KEY = ''
     DEBUG = True
     ALLOWED_HOSTS = ['*']
     DATABASES = {
