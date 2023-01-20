@@ -6,6 +6,7 @@ from product.models import Product
 from ui.models import AddId
 from sys import argv
 
+
 class RozetkaAPI:
     BASE_URL = 'https://rozetka.com.ua/api/product-api/v4/goods/get-main?front-type=xl&country=UA&lang=ua&goodsId='
 
@@ -29,7 +30,7 @@ def add_product(id_item):
     try:
         data_item = RozetkaAPI().get_item_data(id_item)
         if data_item:
-            Product.objects.create(
+            Product.objects.update_or_create(
                 product_id=data_item['item_id'],
                 title=data_item['title'],
                 old_price=data_item['old_price'],
