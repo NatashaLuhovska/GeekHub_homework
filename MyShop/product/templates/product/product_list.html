@@ -1,0 +1,13 @@
+{% extends 'ui/base.html' %}
+{% block content %}
+    <div>
+    {% for product in all_products %}
+        <div>
+            <p>Title: {{product.title}} </p>
+            <p>Price: {{product.current_price}}</p>
+            <p>View details: <a href="{% url 'products:details' product.id %}" target="_blank">View...</a></p>
+            <hr>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

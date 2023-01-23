@@ -1,0 +1,10 @@
+{% extends 'ui/base.html' %}
+
+{% block content %}
+    <h1>Add new products</h1>
+    <h3> Pleace separated by spaces your id list</h3>
+    <form method="POST">{% csrf_token %}
+        {{ form_add_id }}
+        <button type="submit">Add products</button>
+    </form>
+{% endblock %}
