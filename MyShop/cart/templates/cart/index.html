@@ -27,6 +27,7 @@
     {% empty %}
         <p>You cart is empty.</p>
     {%endfor%}
+    <h2>Total price in cart: {{ total_price }}</h2>
     {% if products %}
     <hr>
     <form action="{% url 'cart:clear-cart' %}" method="post">
