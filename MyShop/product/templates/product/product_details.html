@@ -10,11 +10,13 @@
     <p>Category code: {{product.category}} </p>
     <p>View details on site: <a href="{{product.href_product}}" target="_blank">View...</a></p>
     <p>Description: <br> {{product.description}} </p>
-    <form action="{% url 'cart:add' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p}}
-        <button type="submit">Add to cart</button>
-    </form>
+    {% if product.current_price != 0 %}
+        <form action="{% url 'cart:add' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p}}
+            <button type="submit">Add to cart</button>
+        </form>
+    {% endif %}
     <hr>
 </div>
 
