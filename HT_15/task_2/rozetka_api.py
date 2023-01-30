@@ -22,6 +22,6 @@ class RozetkaAPI:
 		item['href'] = data.get('href')
 		item['brand'] = data.get('brand')
 		item['category'] = data.get('category_id')
+		#item['category_title'] = data.get('last_category')['title']
 		print(item)
 		return item
-

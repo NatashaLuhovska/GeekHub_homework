@@ -1,9 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
+from django.contrib import messages
+
 from .forms import AddIdForm
 from subprocess import Popen
 
 
 def index(request):
+    if not request.user.is_superuser:
+        messages.error(request, 'You do not have permission to access this page. Only for the site administrator.')
+        return redirect(reverse('products:list'))
     if request.method == "POST":
         form_add_id = AddIdForm(request.POST)
         if form_add_id.is_valid():

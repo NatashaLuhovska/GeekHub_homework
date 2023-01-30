@@ -1,0 +1,13 @@
+{% extends 'ui/base.html' %}
+
+{% block content %}
+<h3>{{ product.title }}</h3>
+<hr>
+<form action="{% url 'products:save-changes' %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">SAVE CHANGES</button>
+    <br/>
+</form>
+
+{% endblock %}

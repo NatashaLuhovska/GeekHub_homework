@@ -1,6 +1,20 @@
 {% extends 'ui/base.html' %}
 {% block content %}
     <div>
+        <div>
+            <ul>
+                {% for category in all_categories %}
+                <p><a href="{% url 'products:from-category' cid=category.id %}">{{ category.category_title }}</a></p>
+                {% endfor %}
+
+            </ul>
+        </div>
+        <hr>
+        {% if messages %}
+            {%for message in messages %}
+                <h3>{{ message }}</h3>
+            {%endfor%}
+        {% endif %}
     {% for product in all_products %}
         <div>
             <p>Title: {{product.title}} </p>

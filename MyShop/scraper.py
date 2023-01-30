@@ -2,7 +2,7 @@ import requests
 import django
 django.setup()
 
-from product.models import Product
+from product.models import Product, Category
 from ui.models import AddId
 from sys import argv
 
@@ -22,6 +22,7 @@ class RozetkaAPI:
         item['href'] = data.get('href')
         item['brand'] = data.get('brand')
         item['category'] = data.get('category_id')
+        item['category_title'] = data.get('last_category')['title']
         item['description'] = data.get('docket')
         return item
 
@@ -30,6 +31,10 @@ def add_product(id_item):
     try:
         data_item = RozetkaAPI().get_item_data(id_item)
         if data_item:
+            category_item = Category.objects.get_or_create(
+                category=data_item['category'],
+                category_title=data_item['category_title']
+            )[0]
             Product.objects.update_or_create(
                 product_id=data_item['item_id'],
                 title=data_item['title'],
@@ -37,7 +42,7 @@ def add_product(id_item):
                 current_price=data_item['current_price'],
                 href_product=data_item['href'],
                 brand=data_item['brand'],
-                category=data_item['category'],
+                category=category_item,
                 description=data_item['description'],
             )
     except Exception:

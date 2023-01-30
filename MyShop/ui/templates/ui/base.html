@@ -17,11 +17,19 @@
 {# Navigation Header #}
 <div>
     <ul id="nav-header">
+        {% if request.user.is_superuser %}
         <li><a href="{% url 'ui:index' %}">Add products</a></li>
+        {% endif %}
         <li><a href="{% url 'products:list' %}">Products</a></li>
         <li><a href="{% url 'cart:view' %}">Cart</a></li>
+        <li style="float: right;">{% if request.user.is_authenticated %}Hello, {{request.user.get_username}} <a href="{% url 'logout' %}?next={% url 'products:list'%}">LOGOUT</a>{% else %}Hello,guest.
+            <a href="{% url 'login' %}?next={% url 'products:list'%}">LOGIN</a>{% endif %}</li>
+        {% if request.user.is_superuser %}
+        <li style="float: right;"><a href="{% url 'admin:index' %}">AdminSite</a></li>
+        {% endif %}
     </ul>
     <hr>
+
 </div>
 {# Content #}
 {% block content %}

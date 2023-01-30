@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect, reverse
 from django.views.decorators.http import require_http_methods
+from django.contrib import messages
 
 from product.forms import AddProductToCartForm, ProductIdForm
 from product.models import Product
 
 
 def view_cart(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Only for authenticated users! Please login!')
+        return redirect(reverse('login'))
     print(request.session.items())
     request.session.setdefault('cart', {})
     cart = request.session.get('cart')
@@ -26,6 +30,9 @@ def view_cart(request):
 
 @require_http_methods(['POST'])
 def add_to_cart(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Only for authenticated users! Please login!')
+        return redirect(reverse('login'))
     form = AddProductToCartForm(request.POST)
     if not form.is_valid():
         return redirect(reverse('products:list'))
@@ -42,6 +49,9 @@ def add_to_cart(request):
 
 @require_http_methods(['POST'])
 def change_quantity(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Only for authenticated users! Please login!')
+        return redirect(reverse('login'))
     form = AddProductToCartForm(request.POST)
     if form.is_valid():
         data = form.cleaned_data
@@ -53,6 +63,9 @@ def change_quantity(request):
 
 @require_http_methods(['POST'])
 def remove_product_of_cart(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Only for authenticated users! Please login!')
+        return redirect(reverse('login'))
     form = ProductIdForm(request.POST)
     if form.is_valid():
         data = form.cleaned_data
@@ -64,6 +77,9 @@ def remove_product_of_cart(request):
 
 @require_http_methods(['POST'])
 def clear_cart(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Only for authenticated users! Please login!')
+        return redirect(reverse('login'))
     cart = request.session.get('cart')
     cart.clear()
     request.session.modified = True

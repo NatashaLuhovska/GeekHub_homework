@@ -8,6 +8,10 @@ class Product(models.Model):
     current_price = models.DecimalField(max_digits=10, decimal_places=2, default='0.00')
     href_product = models.CharField(max_length=256, default='', blank=True)
     brand = models.CharField(max_length=120, default='')
-    category = models.CharField(max_length=40, default='')
+    category = models.ForeignKey('Category', on_delete=models.CASCADE)
     description = models.TextField(default='', blank=True)
 
+
+class Category(models.Model):
+    category = models.CharField(max_length=40, default='', blank=True)
+    category_title = models.CharField(max_length=256, default='', blank=True)
