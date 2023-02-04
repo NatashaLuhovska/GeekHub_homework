@@ -9,7 +9,7 @@
         <p>Price: {{product.current_price}}</p>
         <p>View details: <a href="{% url 'products:details' product.id %}" target="_blank">View...</a></p>
         <p>Added quantity: {{product.in_cart_quantity}}</p>
-        <form action="{% url 'cart:change-quantity' %}" method="post">
+        <form action="{% url 'cart:add' 'change' %}" method="post">
             {% csrf_token %}
             <h4>Change quantity</h4>
             {{ product.form_q }}

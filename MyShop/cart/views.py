@@ -10,7 +10,6 @@ def view_cart(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Only for authenticated users! Please login!')
         return redirect(reverse('login'))
-    print(request.session.items())
     request.session.setdefault('cart', {})
     cart = request.session.get('cart')
     products = list(Product.objects.filter(id__in=cart.keys()))
@@ -29,7 +28,7 @@ def view_cart(request):
 
 
 @require_http_methods(['POST'])
-def add_to_cart(request):
+def add_to_cart(request, addchange):
     if not request.user.is_authenticated:
         messages.error(request, 'Only for authenticated users! Please login!')
         return redirect(reverse('login'))
@@ -42,23 +41,14 @@ def add_to_cart(request):
     product = Product.objects.get(id=data['product_id'])
     if product.current_price > 0:
         cart.setdefault(str(data['product_id']), 0)
-        cart[str(data['product_id'])] += data['quantity']
-        request.session.modified = True
-    return redirect(reverse('products:details', kwargs={'pid': data['product_id']}))
-
-
-@require_http_methods(['POST'])
-def change_quantity(request):
-    if not request.user.is_authenticated:
-        messages.error(request, 'Only for authenticated users! Please login!')
-        return redirect(reverse('login'))
-    form = AddProductToCartForm(request.POST)
-    if form.is_valid():
-        data = form.cleaned_data
-        cart = request.session.get('cart')
-        cart[str(data['product_id'])] = data['quantity']
-        request.session.modified = True
-    return redirect(reverse('cart:view'))
+        if addchange == 'add':
+            cart[str(data['product_id'])] += data['quantity']
+            request.session.modified = True
+            return redirect(reverse('products:details', kwargs={'pid': data['product_id']}))
+        elif addchange == 'change':
+            cart[str(data['product_id'])] = data['quantity']
+            request.session.modified = True
+            return redirect(reverse('cart:view'))
 
 
 @require_http_methods(['POST'])
