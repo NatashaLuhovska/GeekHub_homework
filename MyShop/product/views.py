@@ -2,9 +2,14 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
+from rest_framework import authentication
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import BasePermission
+from rest_framework.pagination import PageNumberPagination
 
 from product.forms import AddProductToCartForm, ProductUpdateForm, ProductIdForm
 from .models import Product, Category
+from .serializers import ProductSerializer, CategorySerializer
 
 
 def products(request):
@@ -88,3 +93,33 @@ def remove_product(request):
         data = form.cleaned_data
         Product.objects.filter(id=data['product_id']).delete()
     return redirect(reverse('products:list'))
+
+
+class UserPermission(BasePermission):
+    def has_permission(self, request, view):
+        if view.action in ['retrieve', 'list']:
+            return request.user.is_authenticated
+        elif view.action == ['create', 'update', 'partial_update', 'destroy']:
+            return request.user.is_superuser
+        else:
+            return False
+
+
+class MyPagination(PageNumberPagination):
+    page_size = 5
+
+
+class ProductApiView(ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (UserPermission,)
+    pagination_class = MyPagination
+
+
+class CategoryApiView(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (UserPermission,)
+    pagination_class = MyPagination

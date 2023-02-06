@@ -6,6 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>My site</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <style>
         #nav-header > li {
             display: inline-block;
@@ -21,7 +22,7 @@
         <li><a href="{% url 'ui:index' %}">Add products</a></li>
         {% endif %}
         <li><a href="{% url 'products:list' %}">Products</a></li>
-        <li><a href="{% url 'cart:view' %}">Cart</a></li>
+        <li><a href="{% url 'cart:view' %}">Cart(<span id="cartQuantity"></span>)</a></li>
         <li style="float: right;">{% if request.user.is_authenticated %}Hello, {{request.user.get_username}} <a href="{% url 'logout' %}?next={% url 'products:list'%}">LOGOUT</a>{% else %}Hello,guest.
             <a href="{% url 'login' %}?next={% url 'products:list'%}">LOGIN</a>{% endif %}</li>
         {% if request.user.is_superuser %}
@@ -34,5 +35,16 @@
 {# Content #}
 {% block content %}
 {% endblock %}
+<script>
+    $(document).ready(function(){
+        $.ajax({
+            url: "{% url 'cart:api-total-quantity' %}",
+            method: 'GET',
+                success: function(result){
+                    $("#cartQuantity").html(result.cart_total_quantity);
+            }}
+        )
+    });
+</script>
 </body>
 </html>

@@ -8,13 +8,12 @@
         <p>Title: {{product.title}} </p>
         <p>Price: {{product.current_price}}</p>
         <p>View details: <a href="{% url 'products:details' product.id %}" target="_blank">View...</a></p>
-        <p>Added quantity: {{product.in_cart_quantity}}</p>
-        <form action="{% url 'cart:add' 'change' %}" method="post">
+        {#<form action="{% url 'cart:add' 'change' %}" method="post">#}
             {% csrf_token %}
             <h4>Change quantity</h4>
             {{ product.form_q }}
-            <button type="submit">Change</button>
-        </form>
+            <button type="submit" id="changeQuantityInCartBtn">Change</button>
+        {#</form>#}
         <br>
         <form action="{% url 'cart:remove-product-of-cart' %}" method="post">
             {% csrf_token %}
@@ -27,7 +26,7 @@
     {% empty %}
         <p>You cart is empty.</p>
     {%endfor%}
-    <h2>Total price in cart: {{ total_price }}</h2>
+    <h2>Total price in cart: {{total_price}}</h2>
     {% if products %}
     <hr>
     <form action="{% url 'cart:clear-cart' %}" method="post">
@@ -36,4 +35,35 @@
     </form>
     {% endif %}
     <hr>
+
+    <script>
+            $(document).ready(function () {
+                $(document).on('click', '#changeQuantityInCartBtn' , function () {
+                    const btn = $(this)
+                    $.ajax({
+                            url: "{% url 'cart:add' 'change' %}",
+                            method: 'POST',
+                            data: {
+                                quantity: btn.parent().find('#id_quantity').val(),
+                                product_id: btn.parent().find('#id_product_id').val(),
+                            },
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                            },
+                            success: function (result) {
+                                $("#cartQuantity").html(result.cart_total_quantity);
+                                $("#cartTotalPrice").html(result.total_price_in_cart);
+                                btn.html(result.message);
+                                setTimeout(function () {
+                                    btn.html('Change quantity')
+                                }, 2000)
+                            },
+                            error: function (xhr, status, error) {
+                                alert(xhr.responseText)
+                            }
+                        }
+                    )
+                })
+            });
+    </script>
 {% endblock %}

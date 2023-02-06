@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
+from django.http.response import JsonResponse
 
 from product.forms import AddProductToCartForm, ProductIdForm
 from product.models import Product
@@ -16,7 +17,7 @@ def view_cart(request):
     total_price_in_cart = 0
     for product in products:
         product.in_cart_quantity = cart[str(product.id)]
-        product.form_q = AddProductToCartForm(initial={'product_id': product.id, 'quantity': 1})
+        product.form_q = AddProductToCartForm(initial={'product_id': product.id, 'quantity': product.in_cart_quantity})
         product.form_id = ProductIdForm(initial={'product_id': product.id})
         total_price_in_cart += product.current_price * product.in_cart_quantity
 
@@ -34,7 +35,7 @@ def add_to_cart(request, addchange):
         return redirect(reverse('login'))
     form = AddProductToCartForm(request.POST)
     if not form.is_valid():
-        return redirect(reverse('products:list'))
+        return JsonResponse({'message': 'Form is not valid, check the quantity.'}, status=400)
 
     data = form.cleaned_data
     cart = request.session.setdefault('cart', {})
@@ -44,11 +45,12 @@ def add_to_cart(request, addchange):
         if addchange == 'add':
             cart[str(data['product_id'])] += data['quantity']
             request.session.modified = True
-            return redirect(reverse('products:details', kwargs={'pid': data['product_id']}))
+
+
         elif addchange == 'change':
             cart[str(data['product_id'])] = data['quantity']
             request.session.modified = True
-            return redirect(reverse('cart:view'))
+        return JsonResponse({'message': 'Product was added to the cart.', 'cart_total_quantity': sum(cart.values())})
 
 
 @require_http_methods(['POST'])
@@ -74,3 +76,8 @@ def clear_cart(request):
     cart.clear()
     request.session.modified = True
     return redirect(reverse('cart:view'))
+
+
+def cart_total_quantity(request):
+    cart = request.session.get('cart', {})
+    return JsonResponse({'cart_total_quantity': sum(cart.values())})
