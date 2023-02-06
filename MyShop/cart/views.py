@@ -45,8 +45,6 @@ def add_to_cart(request, addchange):
         if addchange == 'add':
             cart[str(data['product_id'])] += data['quantity']
             request.session.modified = True
-
-
         elif addchange == 'change':
             cart[str(data['product_id'])] = data['quantity']
             request.session.modified = True
@@ -61,10 +59,10 @@ def remove_product_of_cart(request):
     form = ProductIdForm(request.POST)
     if form.is_valid():
         data = form.cleaned_data
-        cart = request.session.get('cart')
+        cart = request.session.get('cart', {})
         cart.pop(str(data['product_id']))
         request.session.modified = True
-    return redirect(reverse('cart:view'))
+    return JsonResponse({'message': 'Product was delete from cart.', 'cart_total_quantity': sum(cart.values())})
 
 
 @require_http_methods(['POST'])
@@ -75,7 +73,7 @@ def clear_cart(request):
     cart = request.session.get('cart')
     cart.clear()
     request.session.modified = True
-    return redirect(reverse('cart:view'))
+    return JsonResponse({'cart_total_quantity': 0})
 
 
 def cart_total_quantity(request):

@@ -1,41 +1,42 @@
 {% extends 'ui/base.html' %}
 
 {% block content %}
-    <h3>Cart</h3>
-    <hr>
-    {% for product in products %}
-    <div>
-        <p>Title: {{product.title}} </p>
-        <p>Price: {{product.current_price}}</p>
-        <p>View details: <a href="{% url 'products:details' product.id %}" target="_blank">View...</a></p>
-        {#<form action="{% url 'cart:add' 'change' %}" method="post">#}
+    <div class="cartOfProducts">
+        <h3>Cart</h3>
+        <hr>
+        {% for product in products %}
+        <div class="productInCartdiv">
+            <p>Title: {{product.title}} </p>
+            <p>Price: {{product.current_price}}</p>
+            <p>View details: <a href="{% url 'products:details' product.id %}" target="_blank">View...</a></p>
+            {#<form action="{% url 'cart:add' 'change' %}" method="post">#}
+                {% csrf_token %}
+                <h4>Change quantity</h4>
+                {{ product.form_q }}
+                <button type="submit" id="changeQuantityInCartBtn">Change</button>
+            {#</form>#}
+            <br>
+            {#<form action="{% url 'cart:remove-product-of-cart' %}" method="post">#}
+                {% csrf_token %}
+                {{ product.form_id }}
+                <button type="submit" id="removeProductOfCartBtn">Remove product of cart</button>
+            {#</form>#}
+            <hr>
+        </div>
+
+        {% empty %}
+            <p>You cart is empty.</p>
+        {%endfor%}
+        <h2>Total price in cart: {{total_price}}</h2>
+        {% if products %}
+        <hr>
+        {#<form action="{% url 'cart:clear-cart' %}" method="post">#}
             {% csrf_token %}
-            <h4>Change quantity</h4>
-            {{ product.form_q }}
-            <button type="submit" id="changeQuantityInCartBtn">Change</button>
+            <button type="submit" id="clearTheCart">Clear cart</button>
         {#</form>#}
-        <br>
-        <form action="{% url 'cart:remove-product-of-cart' %}" method="post">
-            {% csrf_token %}
-            {{ product.form_id }}
-            <button type="submit">Remove product of cart</button>
-        </form>
+        {% endif %}
         <hr>
     </div>
-
-    {% empty %}
-        <p>You cart is empty.</p>
-    {%endfor%}
-    <h2>Total price in cart: {{total_price}}</h2>
-    {% if products %}
-    <hr>
-    <form action="{% url 'cart:clear-cart' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Clear cart</button>
-    </form>
-    {% endif %}
-    <hr>
-
     <script>
             $(document).ready(function () {
                 $(document).on('click', '#changeQuantityInCartBtn' , function () {
@@ -52,11 +53,55 @@
                             },
                             success: function (result) {
                                 $("#cartQuantity").html(result.cart_total_quantity);
-                                $("#cartTotalPrice").html(result.total_price_in_cart);
                                 btn.html(result.message);
                                 setTimeout(function () {
                                     btn.html('Change quantity')
                                 }, 2000)
+                            },
+                            error: function (xhr, status, error) {
+                                alert(xhr.responseText)
+                            }
+                        }
+                    )
+                })
+                $(document).on('click', '#removeProductOfCartBtn' , function () {
+                    const btn = $(this)
+                    console.log(location.href + '.cartOfProducts')
+                    $.ajax({
+                            url: "{% url 'cart:remove-product-of-cart' %}",
+                            method: 'POST',
+                            data: {
+                                product_id: btn.parent().find('#id_product_id').val(),
+                            },
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                            },
+                            success: function (result) {
+                                $("#cartQuantity").html(result.cart_total_quantity);
+                                setTimeout(function () {
+                                    window.location.reload(true)
+                                }, 200)
+                            },
+                            error: function (xhr, status, error) {
+                                alert(xhr.responseText)
+                            }
+                        }
+                    )
+                })
+                $(document).on('click', '#clearTheCart' , function () {
+                    const btn = $(this)
+                    console.log(location.href + '.cartOfProducts')
+                    $.ajax({
+                            url: "{% url 'cart:clear-cart' %}",
+                            method: 'POST',
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                            },
+                            success: function (result) {
+                                $("#cartQuantity").html(result.cart_total_quantity);
+                                setTimeout(function () {
+                                    window.location.reload(true)
+                                }, 200)
                             },
                             error: function (xhr, status, error) {
                                 alert(xhr.responseText)
