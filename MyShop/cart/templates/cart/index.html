@@ -66,7 +66,6 @@
                 })
                 $(document).on('click', '#removeProductOfCartBtn' , function () {
                     const btn = $(this)
-                    console.log(location.href + '.cartOfProducts')
                     $.ajax({
                             url: "{% url 'cart:remove-product-of-cart' %}",
                             method: 'POST',
@@ -78,9 +77,11 @@
                             },
                             success: function (result) {
                                 $("#cartQuantity").html(result.cart_total_quantity);
+                                btn.html(result.message);
+
                                 setTimeout(function () {
-                                    window.location.reload(true)
-                                }, 200)
+                                    $(".cartOfProducts").load(" .cartOfProducts>*");
+                                }, 2000)
                             },
                             error: function (xhr, status, error) {
                                 alert(xhr.responseText)
@@ -90,7 +91,6 @@
                 })
                 $(document).on('click', '#clearTheCart' , function () {
                     const btn = $(this)
-                    console.log(location.href + '.cartOfProducts')
                     $.ajax({
                             url: "{% url 'cart:clear-cart' %}",
                             method: 'POST',
@@ -99,9 +99,7 @@
                             },
                             success: function (result) {
                                 $("#cartQuantity").html(result.cart_total_quantity);
-                                setTimeout(function () {
-                                    window.location.reload(true)
-                                }, 200)
+                                $(".cartOfProducts").load(" .cartOfProducts>*");
                             },
                             error: function (xhr, status, error) {
                                 alert(xhr.responseText)
