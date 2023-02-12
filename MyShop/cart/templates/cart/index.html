@@ -54,6 +54,7 @@
                             success: function (result) {
                                 $("#cartQuantity").html(result.cart_total_quantity);
                                 btn.html(result.message);
+                                $(".cartOfProducts").load(" .cartOfProducts>*");
                                 setTimeout(function () {
                                     btn.html('Change quantity')
                                 }, 2000)
