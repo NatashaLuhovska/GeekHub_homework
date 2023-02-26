@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
 
 from .forms import AddIdForm
-from subprocess import Popen
+from .tasks import add_product
 
 
 def index(request):
@@ -14,7 +14,8 @@ def index(request):
         if form_add_id.is_valid():
             string_id = form_add_id.save()
             form_add_id.save()
-            Popen(['python', 'scraper.py', f'{string_id.id}'])
+            print(string_id.id)
+            add_product.delay(string_id.id)
             return redirect('ui:index')
 
     form_add_id = AddIdForm()
