@@ -46,4 +46,15 @@ https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX/Getting_Started
 1. Модель категорії - тільки ListView
 2. Модель Продукта - ListView + Update / Delete, додати валідацію на апдейт / деліт продукта - його може зробити тільки суперюзер. (authentication_classes = (authentication.SessionAuthentication, ) )
 
+------------------------------------------------------------------------------------
+
+HT #23
+
+Доробити процес скрейпінгу нових продуктів, використовуючи в якості скрейпера запроси з модулем requests, а багатопотоковості скрейпінга досягнути використанням Celery завдань.
+
+Корисні посилання:
+https://docs.celeryq.dev/en/stable/getting-started/introduction.html
+https://docs.celeryq.dev/en/stable/django/first-steps-with-django.html#django-first-steps
+
+
 
